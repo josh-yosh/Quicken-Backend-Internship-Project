@@ -18,7 +18,7 @@ public class AccountRepo {
     private final JdbcTemplate jdbc;
     private static final AccountRowMapper ROW_MAPPER =  new AccountRowMapper();
 
-    public List<Account> getAllAccounts(){
+    public List<Account> findAll(){
         String sql = "SELECT * FROM Accounts";
         List<Account> allAccounts = jdbc.query(sql, ROW_MAPPER);;
         return allAccounts;
