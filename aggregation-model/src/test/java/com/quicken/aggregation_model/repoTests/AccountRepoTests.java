@@ -23,7 +23,7 @@ public class AccountRepoTests {
 
     @Test
     void getAllAccounts_returnsAllRowsFromDatabase() {
-        List<Account> accounts = accountRepo.getAllAccounts();
+        List<Account> accounts = accountRepo.findAll();
 
         assertThat(accounts).hasSize(3);
 
