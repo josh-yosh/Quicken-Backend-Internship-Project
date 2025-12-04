@@ -16,10 +16,11 @@ import lombok.AllArgsConstructor;
 public class AccountRepo {
     
     private final JdbcTemplate jdbc;
+    private static final AccountRowMapper ROW_MAPPER =  new AccountRowMapper();
 
     public List<Account> getAllAccounts(){
         String sql = "SELECT * FROM Accounts";
-        List<Account> allAccounts = jdbc.query(sql, new AccountRowMapper());;
+        List<Account> allAccounts = jdbc.query(sql, ROW_MAPPER);;
         return allAccounts;
     }
 
