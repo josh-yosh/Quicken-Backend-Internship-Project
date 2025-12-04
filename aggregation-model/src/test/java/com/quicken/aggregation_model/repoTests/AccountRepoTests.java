@@ -27,6 +27,7 @@ public class AccountRepoTests {
 
         assertThat(accounts).hasSize(3);
 
+        //  (1, 'Personal Finances 2024', 'Personal income and household expenses'),
         Account first = accounts.get(0);
         assertThat(first.getId()).isEqualTo(1L);
         assertThat(first.getName()).isEqualTo("Personal Finances 2024");

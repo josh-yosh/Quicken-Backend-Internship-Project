@@ -20,8 +20,10 @@ public class TransactionRepo {
     private static final TransactionRowMapper ROW_MAPPER =  new TransactionRowMapper();
 
     public List<Transaction> getAllTransactionsFromAccount(long id){
-        String sql = "SELECT * FROM transactions WHERE accountId = ?";
-        List<Transaction> allAccountTransactions = jdbc.query(sql, ROW_MAPPER);
+        String sql = "SELECT * FROM transactions WHERE account_id = ?";
+        //debated on creating an Object[] args to pass to query
+        List<Transaction> allAccountTransactions = jdbc.query(sql, ROW_MAPPER, id);
+        
         return allAccountTransactions;
     }
 
@@ -30,7 +32,7 @@ public class TransactionRepo {
         public Transaction mapRow(ResultSet rs, int rowNum) throws SQLException {
             Transaction transaction = new Transaction();
             transaction.setId(rs.getLong("id"));
-            transaction.setAccountId(rs.getLong("accountId"));
+            transaction.setAccountId(rs.getLong("account_id"));
             transaction.setAmount(rs.getDouble("amount"));
             transaction.setDescription(rs.getString("description"));
             transaction.setDate(rs.getDate("date"));
