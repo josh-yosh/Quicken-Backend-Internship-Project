@@ -5,5 +5,5 @@ Hello! Welcome to my simple model to represent accounts and their transactions.
 ## Planning and System Design
 
 
-<img width="1475" height="561" alt="Screenshot 2025-12-04 at 12 01 25" src="https://github.com/user-attachments/assets/8771538c-8249-49dc-82d3-a6df7a3e941e" />
+<img width="1428" height="467" alt="Screenshot 2025-12-04 at 20 13 39" src="https://github.com/user-attachments/assets/02c87a6b-0d59-4fa8-9c39-cef4f6522feb" />
 Design is rudimentary and is prone to change and improvements. Is not a finalized plan.
