@@ -4,8 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+
+import com.quicken.aggregation_model.exceptions.AccountNotFoundException;
 import com.quicken.aggregation_model.model.Account;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -19,9 +22,19 @@ public class AccountRepo {
     private static final AccountRowMapper ROW_MAPPER =  new AccountRowMapper();
 
     public List<Account> findAll(){
-        String sql = "SELECT * FROM Accounts";
+        String sql = "SELECT * FROM accounts";
         List<Account> allAccounts = jdbc.query(sql, ROW_MAPPER);;
         return allAccounts;
+    }
+
+    public Account findAccountbyId(Long id){
+        try{
+            String sql = "SELECT * FROM accounts WHERE account_id = ?";
+            Account account = jdbc.queryForObject(sql, ROW_MAPPER, id);
+            return account;
+        }  catch (EmptyResultDataAccessException e) {
+            throw new AccountNotFoundException(id);
+        }
     }
 
     private static class AccountRowMapper implements RowMapper<Account> {

@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
-import com.quicken.aggregation_model.model.Account;
 import com.quicken.aggregation_model.model.Transaction;
 
 import lombok.AllArgsConstructor;

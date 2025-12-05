@@ -1,9 +1,6 @@
 package com.quicken.aggregation_model.service;
 
-import java.lang.reflect.Array;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -14,7 +11,6 @@ import com.quicken.aggregation_model.model.Account;
 import com.quicken.aggregation_model.model.Transaction;
 import com.quicken.aggregation_model.repository.AccountRepo;
 import com.quicken.aggregation_model.repository.TransactionRepo;
-import com.quicken.aggregation_model.vo.Summary.SummaryMutable;
 import com.quicken.aggregation_model.vo.Summary.SummaryVO;
 import com.quicken.aggregation_model.vo.Summary.Summary;
 import com.quicken.aggregation_model.vo.Summary.SummaryComparator;
@@ -35,44 +31,37 @@ public class AggregationServiceImpl implements AggregationService {
     }
 
     @Override
-    public List<SummaryVO> getAccountDailySummary(long AccountId, Date startDate, Date endDate) {
-        List<Transaction> transactionsInRange = transactionRepo.getAllTransactionsFromAccountInDateRange(AccountId, startDate, endDate);
-        Map<Date, SummaryMutable> dateToSummaryMutableMap = new HashMap<>();
-
-        //Iterate through all the transactions given from query
-        for(Transaction transaction: transactionsInRange){
-            Date transactionDate = transaction.getDate();
-            boolean dateIsAccounted = dateToSummaryMutableMap.containsKey(transactionDate);
-
-            //check if date is in map to SummaryMutable and then update if is in. If not, add new SummaryMutable in map
-            if(dateIsAccounted){
-                SummaryMutable summaryMutable = dateToSummaryMutableMap.get(transactionDate);
-                summaryMutable.addTransactionAmount(transaction.getAmount());
-            } else {
-                SummaryMutable newSummaryMutable = new SummaryMutable();
-                newSummaryMutable.addTransactionAmount(transaction.getAmount());
-                dateToSummaryMutableMap.put(transactionDate, newSummaryMutable);
-            }
-        }
-
-        //Create into List inorder to convert summaryMutables into SummaryVO's
-        List<SummaryMutable> summaryMutables = List.copyOf(dateToSummaryMutableMap.values());
-        List<SummaryVO> summaryVOs = new ArrayList<>();
-
-        for(SummaryMutable summaryMutable: summaryMutables){
-            summaryVOs.add(new SummaryVO(summaryMutable.getExpenses(), summaryMutable.getIncome(), summaryMutable.getNet(), summaryMutable.getDate()));
-        }
-
-        //Sort by Date
-        Collections.sort(summaryVOs, summaryComparator);
-        return summaryVOs;
-    }
-
-    @Override
     public SummaryVO getAccountSummary(long id, Date startDate, Date endDate) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getAccountSummary'");
     }
 
-    
+    @Override
+    public List<Summary> getAccountDailySummary(long AccountId, Date startDate, Date endDate) {
+        List<Transaction> transactionsInRange = transactionRepo.getAllTransactionsFromAccountInDateRange(AccountId, startDate, endDate);
+        Map<Date, Summary> dateToSummaryVoMap = new HashMap<>();
+
+        //Iterate through all the transactions given from query
+        for(Transaction transaction: transactionsInRange){
+            Date transactionDate = transaction.getDate();
+            boolean dateIsAccounted = dateToSummaryVoMap.containsKey(transactionDate);
+
+            //check if date is in map to SummaryMutable and then update if is in. If not, add new SummaryMutable in map
+            if(dateIsAccounted){
+                Summary summaryVO = dateToSummaryVoMap.get(transactionDate);
+                summaryVO.addTransactionAmount(transaction.getAmount());
+            } else {
+                Summary newSummaryVO = new SummaryVO(transactionDate);
+                newSummaryVO.addTransactionAmount(transaction.getAmount());
+                dateToSummaryVoMap.put(transactionDate, newSummaryVO);
+            }
+        }
+
+        //Create into List inorder to convert summaryMutables into SummaryVO's
+        List<Summary> summaryVOs = List.copyOf(dateToSummaryVoMap.values());
+
+        //Sort by Date
+        Collections.sort(summaryVOs, summaryComparator);
+        return summaryVOs;
+    }
 } 

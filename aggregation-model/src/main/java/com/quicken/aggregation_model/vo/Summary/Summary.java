@@ -7,4 +7,6 @@ public interface Summary {
     public double getIncome();
     public double getNet();
     public Date getDate();
+
+    public void addTransactionAmount(double amount);
 }
