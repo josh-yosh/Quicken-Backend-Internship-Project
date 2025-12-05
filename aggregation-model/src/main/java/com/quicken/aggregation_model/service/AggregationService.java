@@ -12,12 +12,8 @@ public interface AggregationService {
     List<Account> getAllAccounts();
 
     //pre: account id must exist
-    //post: description of Account
-    String getAccountDescription(long id);
-
-    //pre: account id must exist
     //post: a SummaryVO with int values income, expenses, net.
-    SummaryVO getAccountSummary(long id);
+    SummaryVO getAccountSummary(long AccountId);
 
     //pre: account id must exist
     //pre: startDate and endDate have to be valid dates
