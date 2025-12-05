@@ -39,10 +39,12 @@ public class AggregationServiceImpl implements AggregationService {
         List<Transaction> transactionsInRange = transactionRepo.getAllTransactionsFromAccountInDateRange(AccountId, startDate, endDate);
         Map<Date, SummaryMutable> dateToSummaryMutableMap = new HashMap<>();
 
+        //Iterate through all the transactions given from query
         for(Transaction transaction: transactionsInRange){
             Date transactionDate = transaction.getDate();
             boolean dateIsAccounted = dateToSummaryMutableMap.containsKey(transactionDate);
 
+            //check if date is in map to SummaryMutable and then update if is in. If not, add new SummaryMutable in map
             if(dateIsAccounted){
                 SummaryMutable summaryMutable = dateToSummaryMutableMap.get(transactionDate);
                 summaryMutable.addTransactionAmount(transaction.getAmount());
@@ -53,6 +55,7 @@ public class AggregationServiceImpl implements AggregationService {
             }
         }
 
+        //Create into List inorder to convert summaryMutables into SummaryVO's
         List<SummaryMutable> summaryMutables = List.copyOf(dateToSummaryMutableMap.values());
         List<SummaryVO> summaryVOs = new ArrayList<>();
 
@@ -60,6 +63,7 @@ public class AggregationServiceImpl implements AggregationService {
             summaryVOs.add(new SummaryVO(summaryMutable.getExpenses(), summaryMutable.getIncome(), summaryMutable.getNet(), summaryMutable.getDate()));
         }
 
+        //Sort by Date
         Collections.sort(summaryVOs, summaryComparator);
         return summaryVOs;
     }
