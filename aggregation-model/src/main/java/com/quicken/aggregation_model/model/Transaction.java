@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter //should transaction be mutable?
+@Setter //should transaction be immutable?
 @Getter
 @EqualsAndHashCode
 public class Transaction {

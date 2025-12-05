@@ -1,5 +1,6 @@
 package com.quicken.aggregation_model.repository;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -19,12 +20,12 @@ public class TransactionRepo {
     private final JdbcTemplate jdbc;
     private static final TransactionRowMapper ROW_MAPPER =  new TransactionRowMapper();
 
-    public List<Transaction> getAllTransactionsFromAccount(long id){
-        String sql = "SELECT * FROM transactions WHERE account_id = ?";
-        //debated on creating an Object[] args to pass to query
-        List<Transaction> allAccountTransactions = jdbc.query(sql, ROW_MAPPER, id);
+    public List<Transaction> getAllTransactionsFromAccountInDateRange(long id, Date startDate, Date endDate){
+        String sql = "SELECT * FROM transactions WHERE account_id = ? AND date BETWEEN ? AND ?";
+        Object[] args = {id, startDate, endDate};
+        List<Transaction> allAccountTransactionsInRange = jdbc.query(sql, ROW_MAPPER, args);
         
-        return allAccountTransactions;
+        return allAccountTransactionsInRange;
     }
 
     private static class TransactionRowMapper implements RowMapper<Transaction> {

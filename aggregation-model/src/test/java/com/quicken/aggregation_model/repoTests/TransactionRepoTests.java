@@ -2,6 +2,7 @@ package com.quicken.aggregation_model.repoTests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.sql.Date;
 import java.util.List;
 
 import com.quicken.aggregation_model.model.Transaction;
@@ -22,9 +23,11 @@ public class TransactionRepoTests {
 
     @Test
     void getAllAccounts_returnsAllRowsFromDatabase() {
-        List<Transaction> transactions = transactionRepo.getAllTransactionsFromAccount(1L);
+        Date startDate = Date.valueOf("2024-01-01");
+        Date endDate = Date.valueOf("2024-01-10");
+        List<Transaction> transactions = transactionRepo.getAllTransactionsFromAccountInDateRange(1L, startDate, endDate);
 
-        assertThat(transactions).hasSize(12);
+        assertThat(transactions).hasSize(5);
 
         //  (1001,1,'2024-01-01',3500.00,'Monthly salary'),
         Transaction first = transactions.get(0);
