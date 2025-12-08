@@ -2,11 +2,16 @@ package com.quicken.aggregation_model.vo.Summary;
 
 import java.sql.Date;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @NoArgsConstructor
 @Setter
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class SummaryVO extends SummaryAbstract implements Summary{
 
     //pre: true

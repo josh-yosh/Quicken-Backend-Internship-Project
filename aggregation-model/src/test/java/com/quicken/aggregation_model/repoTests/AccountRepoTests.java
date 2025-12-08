@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @JdbcTest
@@ -46,10 +48,19 @@ public class AccountRepoTests {
     }
 
     @Test
-    void findAccountbyId_noAccountFoundReturnsNull() {
+    void findAccountbyId_noAccountFoundThrowsException() {
+        // assert accountRepo.findAccountbyId(1L).equals(null);
         assertThrows(RuntimeException.class, () -> {
-            Account account = accountRepo.findAccountbyId(2L);
+            Account account1 = accountRepo.findAccountbyId(4L);
         });
+    }
+
+    @Test
+    void findAccountbyId_findsAccount() {
+        Account accountExpected = new Account(2L, "Small Business 2024", "Simple small business cashflow");
+        Account account1 = accountRepo.findAccountbyId(2L);
+
+        assertEquals(accountExpected, account1);
     }
 }
 

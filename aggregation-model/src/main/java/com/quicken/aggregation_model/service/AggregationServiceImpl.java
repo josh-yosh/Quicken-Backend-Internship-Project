@@ -1,12 +1,16 @@
 package com.quicken.aggregation_model.service;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
+
+import com.quicken.aggregation_model.exceptions.AccountNotFoundException;
 import com.quicken.aggregation_model.model.Account;
 import com.quicken.aggregation_model.model.Transaction;
 import com.quicken.aggregation_model.repository.AccountRepo;
@@ -15,9 +19,10 @@ import com.quicken.aggregation_model.vo.Summary.SummaryVO;
 import com.quicken.aggregation_model.vo.Summary.Summary;
 import com.quicken.aggregation_model.vo.Summary.SummaryComparator;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
+@Service
+@RequiredArgsConstructor
 public class AggregationServiceImpl implements AggregationService {
 
     private final AccountRepo accountRepo;
@@ -37,8 +42,12 @@ public class AggregationServiceImpl implements AggregationService {
     }
 
     @Override
-    public List<Summary> getAccountDailySummary(long AccountId, Date startDate, Date endDate) {
-        List<Transaction> transactionsInRange = transactionRepo.getAllTransactionsFromAccountInDateRange(AccountId, startDate, endDate);
+    public List<Summary> getAccountDailySummary(long accountId, Date startDate, Date endDate) {
+        Account account = accountRepo.findAccountbyId(accountId); //to check if Account exists
+        if(account == null)
+             throw new AccountNotFoundException(accountId);
+
+        List<Transaction> transactionsInRange = transactionRepo.getAllTransactionsFromAccountInDateRange(accountId, startDate, endDate);
         Map<Date, Summary> dateToSummaryVoMap = new HashMap<>();
 
         //Iterate through all the transactions given from query
@@ -50,6 +59,7 @@ public class AggregationServiceImpl implements AggregationService {
             if(dateIsAccounted){
                 Summary summaryVO = dateToSummaryVoMap.get(transactionDate);
                 summaryVO.addTransactionAmount(transaction.getAmount());
+                dateToSummaryVoMap.put(transactionDate, summaryVO);
             } else {
                 Summary newSummaryVO = new SummaryVO(transactionDate);
                 newSummaryVO.addTransactionAmount(transaction.getAmount());
@@ -58,10 +68,12 @@ public class AggregationServiceImpl implements AggregationService {
         }
 
         //Create into List inorder to convert summaryMutables into SummaryVO's
-        List<Summary> summaryVOs = List.copyOf(dateToSummaryVoMap.values());
+        List<Summary> summaryVOs = new ArrayList<>(dateToSummaryVoMap.values());
 
         //Sort by Date
-        Collections.sort(summaryVOs, summaryComparator);
+        if(summaryVOs.size() > 0)
+            Collections.sort(summaryVOs, summaryComparator);
+
         return summaryVOs;
     }
 } 

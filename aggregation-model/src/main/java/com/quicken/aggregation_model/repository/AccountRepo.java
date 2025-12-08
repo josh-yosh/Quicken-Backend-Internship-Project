@@ -29,7 +29,7 @@ public class AccountRepo {
 
     public Account findAccountbyId(Long id){
         try{
-            String sql = "SELECT * FROM accounts WHERE account_id = ?";
+            String sql = "SELECT * FROM accounts WHERE id = ?";
             Account account = jdbc.queryForObject(sql, ROW_MAPPER, id);
             return account;
         }  catch (EmptyResultDataAccessException e) {

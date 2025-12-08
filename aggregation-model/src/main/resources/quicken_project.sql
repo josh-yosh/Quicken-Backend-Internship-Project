@@ -49,6 +49,8 @@ INSERT INTO transactions (id, account_id, date, amount, description) VALUES
   (2008,2,'2024-02-08',-280.40,'Supplies'),
   (2009,2,'2024-02-15',-510.00,'Conference'),
   (2010,2,'2024-02-18',2200.00,'Consulting'),
+  (2011,2,'2024-01-03',5000.00,'Online store sales'),
+  (2012,2,'2024-01-05',-1200.00,'Office rent'),
 
   (3001,3,'2024-01-04',600.00,'Part-time job'),
   (3002,3,'2024-01-05',-700.00,'January rent'),
