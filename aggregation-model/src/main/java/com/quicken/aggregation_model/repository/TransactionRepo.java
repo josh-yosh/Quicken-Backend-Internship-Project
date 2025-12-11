@@ -33,7 +33,7 @@ public class TransactionRepo {
             Transaction transaction = new Transaction();
             transaction.setId(rs.getLong("id"));
             transaction.setAccountId(rs.getLong("account_id"));
-            transaction.setAmount(rs.getDouble("amount"));
+            transaction.setAmount(rs.getBigDecimal("amount"));
             transaction.setDescription(rs.getString("description"));
             transaction.setDate(rs.getDate("date"));
             return transaction;

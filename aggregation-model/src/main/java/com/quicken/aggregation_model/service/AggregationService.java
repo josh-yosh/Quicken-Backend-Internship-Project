@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.quicken.aggregation_model.model.Account;
 import com.quicken.aggregation_model.vo.Summary.Summary;
+import com.quicken.aggregation_model.vo.Summary.SummaryRangeVO;
 
 public interface AggregationService {
     //pre: true
@@ -19,5 +20,5 @@ public interface AggregationService {
     //pre: startDate and endDate have to be valid dates
     //post: a SummaryVO with int values income, expenses, net.
     //post: a timeRange with no transactions will return a SummaryVO with 0's income, expenses, net values.
-    Summary getAccountSummary(long id, Date startDate, Date endDate);
+    SummaryRangeVO getAccountSummary(long id, Date startDate, Date endDate);
 }

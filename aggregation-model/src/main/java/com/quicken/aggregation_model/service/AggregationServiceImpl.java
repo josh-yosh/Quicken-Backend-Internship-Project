@@ -1,5 +1,6 @@
 package com.quicken.aggregation_model.service;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +30,8 @@ public class AggregationServiceImpl implements AggregationService {
     private final AccountRepo accountRepo;
     private final TransactionRepo transactionRepo;
     Comparator<Summary> summaryComparator = SummaryComparator.SUMMARY_COMPARATOR;
+    final int LESS_THAN = -1;
+
 
     @Override
     public List<Account> getAllAccounts() {
@@ -37,7 +40,7 @@ public class AggregationServiceImpl implements AggregationService {
     }
 
     @Override
-    public Summary getAccountSummary(long accountId, Date startDate, Date endDate) {
+    public SummaryRangeVO getAccountSummary(long accountId, Date startDate, Date endDate) {
         Account account = accountRepo.findAccountbyId(accountId); //to check if Account exists
         if(account == null) //should the repo layer throw an exception? or here?
              throw new AccountNotFoundException(accountId);
@@ -45,23 +48,23 @@ public class AggregationServiceImpl implements AggregationService {
 
         List<Transaction> transactionsInRange = transactionRepo.getAllTransactionsFromAccountInDateRange(accountId, startDate, endDate);
 
-        double expenses = 0;
-        double income = 0;
-        double net = 0;
+        BigDecimal expenses = new BigDecimal(0);
+        BigDecimal income = new BigDecimal(0);
+        BigDecimal net = new BigDecimal(0);
 
         for(Transaction transaction: transactionsInRange){
-            double transactionAmount = transaction.getAmount();
-            boolean isExpense = transactionAmount < 0;
+            BigDecimal transactionAmount = transaction.getAmount();
+            boolean isExpense = transactionAmount.compareTo(BigDecimal.valueOf(0)) == LESS_THAN; 
             
             if(isExpense){
-                expenses += transactionAmount;
+                expenses = expenses.add(transactionAmount);
             } else {
-                income += transactionAmount;
+                income = income.add(transactionAmount);
             }
-            net += transactionAmount;
+            net = net.add(transactionAmount);
         }
 
-        Summary summary = new SummaryRangeVO(income, expenses, net, startDate, endDate);
+        SummaryRangeVO summary = new SummaryRangeVO(income, expenses, net, startDate, endDate);
 
         return summary;
     }

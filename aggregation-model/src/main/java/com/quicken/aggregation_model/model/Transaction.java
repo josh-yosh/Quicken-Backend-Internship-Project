@@ -1,5 +1,6 @@
 package com.quicken.aggregation_model.model;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +18,6 @@ public class Transaction {
     private long id;
     private long accountId;
     private Date date;
-    private double amount;
+    private BigDecimal amount;
     private String description; 
 }

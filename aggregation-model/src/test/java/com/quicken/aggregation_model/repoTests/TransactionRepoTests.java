@@ -2,6 +2,7 @@ package com.quicken.aggregation_model.repoTests;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 
@@ -33,7 +34,7 @@ public class TransactionRepoTests {
         Transaction first = transactions.get(0);
         assertThat(first.getId()).isEqualTo(1001L);
         assertThat(first.getAccountId()).isEqualTo(1L);
-        assertThat(first.getAmount()).isEqualTo(3500.00);
+        assertThat(first.getAmount()).isEqualByComparingTo("3500.0");
         assertThat(first.getDate()).isEqualTo("2024-01-01");
         assertThat(first.getDescription()).isEqualTo("Monthly salary");
     }

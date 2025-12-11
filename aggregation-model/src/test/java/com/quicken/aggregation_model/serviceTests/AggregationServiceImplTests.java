@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,11 +63,11 @@ public class AggregationServiceImplTests {
 
         // Mock transactions
         List<Transaction> mockTx = List.of(
-            new Transaction(1, accountId, Date.valueOf("2024-01-03"), 5000.0, description),
-            new Transaction(2, accountId, Date.valueOf("2024-01-03"), 5000.0, description),
-            new Transaction(3, accountId, Date.valueOf("2024-01-05"), -1200.0, description),
-            new Transaction(4, accountId, Date.valueOf("2024-01-05"), -1200.0, description),
-            new Transaction(5, accountId, Date.valueOf("2024-01-07"), -350.75, description)
+            new Transaction(1, accountId, Date.valueOf("2024-01-03"), BigDecimal.valueOf(5000), description),
+            new Transaction(2, accountId, Date.valueOf("2024-01-03"), BigDecimal.valueOf(5000), description),
+            new Transaction(3, accountId, Date.valueOf("2024-01-05"), BigDecimal.valueOf(-1200), description),
+            new Transaction(4, accountId, Date.valueOf("2024-01-05"), BigDecimal.valueOf(-1200), description),
+            new Transaction(5, accountId, Date.valueOf("2024-01-07"), BigDecimal.valueOf(-350.75), description)
         );
         
         when(transactionRepo.getAllTransactionsFromAccountInDateRange(
@@ -75,9 +76,9 @@ public class AggregationServiceImplTests {
             Date.valueOf("2024-01-07")
         )).thenReturn(mockTx);
 
-        Summary summary1 = new SummaryDailyVO(10000, 0.0, 10000.0, Date.valueOf("2024-01-03"));
-        Summary summary2 = new SummaryDailyVO(0, -2400.0, -2400.0, Date.valueOf("2024-01-05"));
-        Summary summary3 = new SummaryDailyVO(0, -350.75, -350.75, Date.valueOf("2024-01-07"));
+        Summary summary1 = new SummaryDailyVO(BigDecimal.valueOf(10000), BigDecimal.valueOf(0), BigDecimal.valueOf(10000), Date.valueOf("2024-01-03"));
+        Summary summary2 = new SummaryDailyVO(BigDecimal.valueOf(0), BigDecimal.valueOf(-2400), BigDecimal.valueOf(-2400), Date.valueOf("2024-01-05"));
+        Summary summary3 = new SummaryDailyVO(BigDecimal.valueOf(0), BigDecimal.valueOf(-375.75), BigDecimal.valueOf(-375.75), Date.valueOf("2024-01-07"));
 
         List<Summary> expectedSummaries = new ArrayList<>(List.of(summary1, summary2, summary3));
         List<Summary> summaries = service.getAccountDailySummary(2L, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-07"));
@@ -96,8 +97,8 @@ public class AggregationServiceImplTests {
 
         // Mock transactions
         List<Transaction> mockTx = List.of(
-            new Transaction(1, accountId, Date.valueOf("2024-01-03"), 5000.0, description),
-            new Transaction(2, accountId, Date.valueOf("2024-01-03"), 5000.0, description)
+            new Transaction(1, accountId, Date.valueOf("2024-01-03"), BigDecimal.valueOf(5000), description),
+            new Transaction(2, accountId, Date.valueOf("2024-01-03"), BigDecimal.valueOf(5000), description)
         );
         
         when(transactionRepo.getAllTransactionsFromAccountInDateRange(
@@ -106,7 +107,7 @@ public class AggregationServiceImplTests {
             Date.valueOf("2024-01-03")
         )).thenReturn(mockTx);
 
-        Summary summary1 = new SummaryDailyVO(10000, 0, 10000, Date.valueOf("2024-01-03"));
+        Summary summary1 = new SummaryDailyVO(BigDecimal.valueOf(10000), BigDecimal.valueOf(0), BigDecimal.valueOf(10000), Date.valueOf("2024-01-03"));
 
         List<Summary> expectedSummaries = List.of(summary1);
         List<Summary> summaries = service.getAccountDailySummary(accountId, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-03"));
@@ -174,11 +175,11 @@ public class AggregationServiceImplTests {
 
         // Mock transactions
         List<Transaction> mockTx = List.of(
-            new Transaction(1, accountId, Date.valueOf("2024-01-03"), 5000.0, description),
-            new Transaction(2, accountId, Date.valueOf("2024-01-03"), 5000.0, description),
-            new Transaction(3, accountId, Date.valueOf("2024-01-05"), -1000.0, description),
-            new Transaction(4, accountId, Date.valueOf("2024-01-05"), -1000.0, description),
-            new Transaction(5, accountId, Date.valueOf("2024-01-07"), -500.00, description)
+            new Transaction(1, accountId, Date.valueOf("2024-01-03"), BigDecimal.valueOf(5000), description),
+            new Transaction(2, accountId, Date.valueOf("2024-01-03"), BigDecimal.valueOf(5000), description),
+            new Transaction(3, accountId, Date.valueOf("2024-01-05"), BigDecimal.valueOf(-1200), description),
+            new Transaction(4, accountId, Date.valueOf("2024-01-05"), BigDecimal.valueOf(-1200), description),
+            new Transaction(5, accountId, Date.valueOf("2024-01-07"), BigDecimal.valueOf(-350.75), description)
         );
         
         when(transactionRepo.getAllTransactionsFromAccountInDateRange(
@@ -187,7 +188,7 @@ public class AggregationServiceImplTests {
             Date.valueOf("2024-01-07")
         )).thenReturn(mockTx);
 
-        Summary ExpectedSummary = new SummaryRangeVO(10000, -2500.0, 7500.0, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-07"));
+        Summary ExpectedSummary = new SummaryRangeVO(BigDecimal.valueOf(10000), BigDecimal.valueOf(-2500.0), BigDecimal.valueOf(7500.0), Date.valueOf("2024-01-03"), Date.valueOf("2024-01-07"));
         Summary actualSummary = service.getAccountSummary(accountId, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-07"));
 
         assertEquals(ExpectedSummary, actualSummary, "ExpectedSummary: " + ExpectedSummary.toString() + "\nActual: " + actualSummary.toString());
@@ -204,8 +205,8 @@ public class AggregationServiceImplTests {
 
         // Mock transactions
         List<Transaction> mockTx = List.of(
-            new Transaction(1, accountId, Date.valueOf("2024-01-03"), 5000.0, description),
-            new Transaction(2, accountId, Date.valueOf("2024-01-03"), -5000.0, description)
+            new Transaction(1, accountId, Date.valueOf("2024-01-03"), BigDecimal.valueOf(5000), description),
+            new Transaction(2, accountId, Date.valueOf("2024-01-03"), BigDecimal.valueOf(-5000), description)
         );
         
         when(transactionRepo.getAllTransactionsFromAccountInDateRange(
@@ -214,7 +215,7 @@ public class AggregationServiceImplTests {
             Date.valueOf("2024-01-03")
         )).thenReturn(mockTx);
 
-        Summary ExpectedSummary = new SummaryRangeVO(5000, -5000.0, 0.0, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-03"));
+        Summary ExpectedSummary = new SummaryRangeVO(BigDecimal.valueOf(5000), BigDecimal.valueOf(-5000), BigDecimal.valueOf(0), Date.valueOf("2024-01-03"), Date.valueOf("2024-01-03"));
         Summary actualSummary = service.getAccountSummary(accountId, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-03"));
 
         assertEquals(ExpectedSummary, actualSummary, "ExpectedSummary: " + ExpectedSummary.toString() + "\nActual: " + actualSummary.toString());
@@ -240,7 +241,7 @@ public class AggregationServiceImplTests {
             Date.valueOf("2024-01-01")
         )).thenReturn(mockTx);
 
-        Summary ExpectedSummary = new SummaryRangeVO(0.0, 0.0, 0.0, Date.valueOf("2024-01-01"), Date.valueOf("2024-01-01"));
+        Summary ExpectedSummary = new SummaryRangeVO(BigDecimal.valueOf(0), BigDecimal.valueOf(0), BigDecimal.valueOf(0), Date.valueOf("2024-01-01"), Date.valueOf("2024-01-01"));
         Summary actualSummary = service.getAccountSummary(accountId, Date.valueOf("2024-01-01"), Date.valueOf("2024-01-01"));
 
         assertEquals(ExpectedSummary, actualSummary, "ExpectedSummary: " + ExpectedSummary.toString() + "\nActual: " + actualSummary.toString());
