@@ -13,18 +13,23 @@ import com.quicken.aggregation_model.service.AggregationService;
 import lombok.AllArgsConstructor;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/accounts")
 @AllArgsConstructor
 public class AccountsController {
 
     private final AggregationService aggregationService;
     private final AccountMapper accountMapper;
 
-    @GetMapping("/accounts")
+    @GetMapping
     public List<AccountDto> getAccounts(){
         return aggregationService.getAllAccounts()
                                     .stream()
                                     .map(accountMapper::toDto)
                                     .toList();
+    }
+
+    @GetMapping("/{accountId}/summary?from=YYYY-MM-DD&to=YYYY-MM-DD")
+    public SummaryRangeDto getAccountSummaryRange(){
+        return null;
     }
 }
