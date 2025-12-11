@@ -3,7 +3,6 @@ package com.quicken.aggregation_model.vo.Summary;
 import java.sql.Date;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
@@ -12,7 +11,8 @@ import lombok.ToString;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = false)
-public class SummaryVO extends SummaryAbstract implements Summary{
+public class SummaryDailyVO extends SummaryAbstract implements Summary{
+    Date date;
 
     //pre: true
     //post: if amount < 0, expenses + amount; 
@@ -28,14 +28,18 @@ public class SummaryVO extends SummaryAbstract implements Summary{
         net += amount;
     }
 
-    public SummaryVO(Date date){
+    public Date getDate(){
+        return date;
+    }
+
+    public SummaryDailyVO(Date date){
         this.income = 0;
         this.expenses = 0;
         this.net = 0;
         this.date = date;
     }
     
-    public SummaryVO(double income, double expenses, double net, Date date){
+    public SummaryDailyVO(double income, double expenses, double net, Date date){
         this.income = income;
         this.expenses = expenses;
         this.net = net;

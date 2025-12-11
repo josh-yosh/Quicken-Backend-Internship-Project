@@ -15,7 +15,8 @@ import com.quicken.aggregation_model.model.Account;
 import com.quicken.aggregation_model.model.Transaction;
 import com.quicken.aggregation_model.repository.AccountRepo;
 import com.quicken.aggregation_model.repository.TransactionRepo;
-import com.quicken.aggregation_model.vo.Summary.SummaryVO;
+import com.quicken.aggregation_model.vo.Summary.SummaryDailyVO;
+import com.quicken.aggregation_model.vo.Summary.SummaryRangeVO;
 import com.quicken.aggregation_model.vo.Summary.Summary;
 import com.quicken.aggregation_model.vo.Summary.SummaryComparator;
 
@@ -36,9 +37,33 @@ public class AggregationServiceImpl implements AggregationService {
     }
 
     @Override
-    public SummaryVO getAccountSummary(long id, Date startDate, Date endDate) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getAccountSummary'");
+    public Summary getAccountSummary(long accountId, Date startDate, Date endDate) {
+        Account account = accountRepo.findAccountbyId(accountId); //to check if Account exists
+        if(account == null) //should the repo layer throw an exception? or here?
+             throw new AccountNotFoundException(accountId);
+
+
+        List<Transaction> transactionsInRange = transactionRepo.getAllTransactionsFromAccountInDateRange(accountId, startDate, endDate);
+
+        double expenses = 0;
+        double income = 0;
+        double net = 0;
+
+        for(Transaction transaction: transactionsInRange){
+            double transactionAmount = transaction.getAmount();
+            boolean isExpense = transactionAmount < 0;
+            
+            if(isExpense){
+                expenses += transactionAmount;
+            } else {
+                income += transactionAmount;
+            }
+            net += transactionAmount;
+        }
+
+        Summary summary = new SummaryRangeVO(income, expenses, net, startDate, endDate);
+
+        return summary;
     }
 
     @Override
@@ -61,7 +86,7 @@ public class AggregationServiceImpl implements AggregationService {
                 summaryVO.addTransactionAmount(transaction.getAmount());
                 dateToSummaryVoMap.put(transactionDate, summaryVO);
             } else {
-                Summary newSummaryVO = new SummaryVO(transactionDate);
+                Summary newSummaryVO = new SummaryDailyVO(transactionDate);
                 newSummaryVO.addTransactionAmount(transaction.getAmount());
                 dateToSummaryVoMap.put(transactionDate, newSummaryVO);
             }

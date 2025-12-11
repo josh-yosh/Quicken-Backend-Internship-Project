@@ -19,7 +19,8 @@ import com.quicken.aggregation_model.repository.AccountRepo;
 import com.quicken.aggregation_model.repository.TransactionRepo;
 import com.quicken.aggregation_model.service.AggregationServiceImpl;
 import com.quicken.aggregation_model.vo.Summary.Summary;
-import com.quicken.aggregation_model.vo.Summary.SummaryVO;
+import com.quicken.aggregation_model.vo.Summary.SummaryDailyVO;
+import com.quicken.aggregation_model.vo.Summary.SummaryRangeVO;
 
 
 public class AggregationServiceImplTests {
@@ -74,9 +75,9 @@ public class AggregationServiceImplTests {
             Date.valueOf("2024-01-07")
         )).thenReturn(mockTx);
 
-        Summary summary1 = new SummaryVO(10000, 0.0, 10000.0, Date.valueOf("2024-01-03"));
-        Summary summary2 = new SummaryVO(0, -2400.0, -2400.0, Date.valueOf("2024-01-05"));
-        Summary summary3 = new SummaryVO(0, -350.75, -350.75, Date.valueOf("2024-01-07"));
+        Summary summary1 = new SummaryDailyVO(10000, 0.0, 10000.0, Date.valueOf("2024-01-03"));
+        Summary summary2 = new SummaryDailyVO(0, -2400.0, -2400.0, Date.valueOf("2024-01-05"));
+        Summary summary3 = new SummaryDailyVO(0, -350.75, -350.75, Date.valueOf("2024-01-07"));
 
         List<Summary> expectedSummaries = new ArrayList<>(List.of(summary1, summary2, summary3));
         List<Summary> summaries = service.getAccountDailySummary(2L, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-07"));
@@ -105,7 +106,7 @@ public class AggregationServiceImplTests {
             Date.valueOf("2024-01-03")
         )).thenReturn(mockTx);
 
-        Summary summary1 = new SummaryVO(10000, 0, 10000, Date.valueOf("2024-01-03"));
+        Summary summary1 = new SummaryDailyVO(10000, 0, 10000, Date.valueOf("2024-01-03"));
 
         List<Summary> expectedSummaries = List.of(summary1);
         List<Summary> summaries = service.getAccountDailySummary(accountId, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-03"));
@@ -160,4 +161,88 @@ public class AggregationServiceImplTests {
         });
     }
 
+    // Range of Dates Summary function
+
+    @Test
+    void getAccountRangeSummary_MultipleDays() {
+        long accountId = 1L;
+        String description = "Testing description";
+
+        // Mock account exists
+        when(accountRepo.findAccountbyId(accountId))
+                .thenReturn(new Account(accountId, "Test", description));
+
+        // Mock transactions
+        List<Transaction> mockTx = List.of(
+            new Transaction(1, accountId, Date.valueOf("2024-01-03"), 5000.0, description),
+            new Transaction(2, accountId, Date.valueOf("2024-01-03"), 5000.0, description),
+            new Transaction(3, accountId, Date.valueOf("2024-01-05"), -1000.0, description),
+            new Transaction(4, accountId, Date.valueOf("2024-01-05"), -1000.0, description),
+            new Transaction(5, accountId, Date.valueOf("2024-01-07"), -500.00, description)
+        );
+        
+        when(transactionRepo.getAllTransactionsFromAccountInDateRange(
+            accountId,
+            Date.valueOf("2024-01-03"),
+            Date.valueOf("2024-01-07")
+        )).thenReturn(mockTx);
+
+        Summary ExpectedSummary = new SummaryRangeVO(10000, -2500.0, 7500.0, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-07"));
+        Summary actualSummary = service.getAccountSummary(accountId, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-07"));
+
+        assertEquals(ExpectedSummary, actualSummary, "ExpectedSummary: " + ExpectedSummary.toString() + "\nActual: " + actualSummary.toString());
+    }
+    
+    @Test
+    void getAccountRangeSummary_oneDay() {
+        long accountId = 2L;
+        String description = "Testing description";
+
+        // Mock account exists
+        when(accountRepo.findAccountbyId(accountId))
+                .thenReturn(new Account(accountId, "Test", description));
+
+        // Mock transactions
+        List<Transaction> mockTx = List.of(
+            new Transaction(1, accountId, Date.valueOf("2024-01-03"), 5000.0, description),
+            new Transaction(2, accountId, Date.valueOf("2024-01-03"), -5000.0, description)
+        );
+        
+        when(transactionRepo.getAllTransactionsFromAccountInDateRange(
+            accountId,
+            Date.valueOf("2024-01-03"),
+            Date.valueOf("2024-01-03")
+        )).thenReturn(mockTx);
+
+        Summary ExpectedSummary = new SummaryRangeVO(5000, -5000.0, 0.0, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-03"));
+        Summary actualSummary = service.getAccountSummary(accountId, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-03"));
+
+        assertEquals(ExpectedSummary, actualSummary, "ExpectedSummary: " + ExpectedSummary.toString() + "\nActual: " + actualSummary.toString());
+    
+    }
+
+    @Test
+    void getAccountRangeSummary_noDay() {
+        long accountId = 2L;
+        String description = "Testing description";
+
+        // Mock account exists
+        when(accountRepo.findAccountbyId(accountId))
+                .thenReturn(new Account(accountId, "Test", description));
+
+        // Mock transactions
+        List<Transaction> mockTx = List.of(
+        );
+
+        when(transactionRepo.getAllTransactionsFromAccountInDateRange(
+            accountId,
+            Date.valueOf("2024-01-01"),
+            Date.valueOf("2024-01-01")
+        )).thenReturn(mockTx);
+
+        Summary ExpectedSummary = new SummaryRangeVO(0.0, 0.0, 0.0, Date.valueOf("2024-01-01"), Date.valueOf("2024-01-01"));
+        Summary actualSummary = service.getAccountSummary(accountId, Date.valueOf("2024-01-01"), Date.valueOf("2024-01-01"));
+
+        assertEquals(ExpectedSummary, actualSummary, "ExpectedSummary: " + ExpectedSummary.toString() + "\nActual: " + actualSummary.toString());
+    }
 }
