@@ -1,7 +1,6 @@
 package com.quicken.aggregation_model.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
