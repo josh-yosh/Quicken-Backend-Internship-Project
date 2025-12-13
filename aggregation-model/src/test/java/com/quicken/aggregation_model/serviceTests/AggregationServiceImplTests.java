@@ -188,7 +188,7 @@ public class AggregationServiceImplTests {
             Date.valueOf("2024-01-07")
         )).thenReturn(mockTx);
 
-        Summary ExpectedSummary = new SummaryRangeVO(BigDecimal.valueOf(10000), BigDecimal.valueOf(-2500.0), BigDecimal.valueOf(7500.0), Date.valueOf("2024-01-03"), Date.valueOf("2024-01-07"));
+        Summary ExpectedSummary = new SummaryRangeVO(BigDecimal.valueOf(10000), BigDecimal.valueOf(-2750.75), BigDecimal.valueOf(7249.25), Date.valueOf("2024-01-03"), Date.valueOf("2024-01-07"));
         Summary actualSummary = service.getAccountSummary(accountId, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-07"));
 
         assertEquals(ExpectedSummary, actualSummary, "ExpectedSummary: " + ExpectedSummary.toString() + "\nActual: " + actualSummary.toString());

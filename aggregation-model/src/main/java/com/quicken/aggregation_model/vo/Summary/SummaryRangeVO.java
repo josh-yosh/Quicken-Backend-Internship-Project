@@ -13,8 +13,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @Setter
 @Getter
-@ToString
-@EqualsAndHashCode(callSuper = false)
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class SummaryRangeVO extends SummaryAbstract implements Summary{
     Date startDate;
     Date endDate;
