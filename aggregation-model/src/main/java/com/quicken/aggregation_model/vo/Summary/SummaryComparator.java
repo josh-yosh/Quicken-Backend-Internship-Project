@@ -1,5 +1,6 @@
 package com.quicken.aggregation_model.vo.Summary;
 
+import java.sql.Date;
 import java.util.Comparator;
 
 public enum SummaryComparator implements Comparator<Summary>{
@@ -11,6 +12,8 @@ public enum SummaryComparator implements Comparator<Summary>{
         assert summary1 != null;
         assert summary2 != null;
 
-        return summary1.getDate().compareTo(summary2.getDate());
+        Date startDate1 = summary1.getDateRange().get(0);
+        Date startDate2 = summary2.getDateRange().get(0);
+        return startDate1.compareTo(startDate2);
     }
 }

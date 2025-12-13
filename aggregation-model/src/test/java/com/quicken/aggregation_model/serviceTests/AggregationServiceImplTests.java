@@ -20,8 +20,7 @@ import com.quicken.aggregation_model.repository.AccountRepo;
 import com.quicken.aggregation_model.repository.TransactionRepo;
 import com.quicken.aggregation_model.service.AggregationServiceImpl;
 import com.quicken.aggregation_model.vo.Summary.Summary;
-import com.quicken.aggregation_model.vo.Summary.SummaryDailyVO;
-import com.quicken.aggregation_model.vo.Summary.SummaryRangeVO;
+import com.quicken.aggregation_model.vo.Summary.SummaryVO;
 
 
 public class AggregationServiceImplTests {
@@ -76,9 +75,9 @@ public class AggregationServiceImplTests {
             Date.valueOf("2024-01-07")
         )).thenReturn(mockTx);
 
-        Summary summary1 = new SummaryDailyVO(BigDecimal.valueOf(10000), BigDecimal.valueOf(0), BigDecimal.valueOf(10000), Date.valueOf("2024-01-03"));
-        Summary summary2 = new SummaryDailyVO(BigDecimal.valueOf(0), BigDecimal.valueOf(-2400), BigDecimal.valueOf(-2400), Date.valueOf("2024-01-05"));
-        Summary summary3 = new SummaryDailyVO(BigDecimal.valueOf(0), BigDecimal.valueOf(-375.75), BigDecimal.valueOf(-375.75), Date.valueOf("2024-01-07"));
+        Summary summary1 = new SummaryVO(BigDecimal.valueOf(10000), BigDecimal.valueOf(0), BigDecimal.valueOf(10000), Date.valueOf("2024-01-03"));
+        Summary summary2 = new SummaryVO(BigDecimal.valueOf(0), BigDecimal.valueOf(-2400), BigDecimal.valueOf(-2400), Date.valueOf("2024-01-05"));
+        Summary summary3 = new SummaryVO(BigDecimal.valueOf(0), BigDecimal.valueOf(-375.75), BigDecimal.valueOf(-375.75), Date.valueOf("2024-01-07"));
 
         List<Summary> expectedSummaries = new ArrayList<>(List.of(summary1, summary2, summary3));
         List<Summary> summaries = service.getAccountDailySummary(2L, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-07"));
@@ -107,7 +106,7 @@ public class AggregationServiceImplTests {
             Date.valueOf("2024-01-03")
         )).thenReturn(mockTx);
 
-        Summary summary1 = new SummaryDailyVO(BigDecimal.valueOf(10000), BigDecimal.valueOf(0), BigDecimal.valueOf(10000), Date.valueOf("2024-01-03"));
+        Summary summary1 = new SummaryVO(BigDecimal.valueOf(10000), BigDecimal.valueOf(0), BigDecimal.valueOf(10000), Date.valueOf("2024-01-03"));
 
         List<Summary> expectedSummaries = List.of(summary1);
         List<Summary> summaries = service.getAccountDailySummary(accountId, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-03"));
@@ -188,7 +187,7 @@ public class AggregationServiceImplTests {
             Date.valueOf("2024-01-07")
         )).thenReturn(mockTx);
 
-        Summary ExpectedSummary = new SummaryRangeVO(BigDecimal.valueOf(10000), BigDecimal.valueOf(-2750.75), BigDecimal.valueOf(7249.25), Date.valueOf("2024-01-03"), Date.valueOf("2024-01-07"));
+        Summary ExpectedSummary = new SummaryVO(BigDecimal.valueOf(10000), BigDecimal.valueOf(-2750.75), BigDecimal.valueOf(7249.25), Date.valueOf("2024-01-03"), Date.valueOf("2024-01-07"));
         Summary actualSummary = service.getAccountSummary(accountId, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-07"));
 
         assertEquals(ExpectedSummary, actualSummary, "ExpectedSummary: " + ExpectedSummary.toString() + "\nActual: " + actualSummary.toString());
@@ -215,7 +214,7 @@ public class AggregationServiceImplTests {
             Date.valueOf("2024-01-03")
         )).thenReturn(mockTx);
 
-        Summary ExpectedSummary = new SummaryRangeVO(BigDecimal.valueOf(5000), BigDecimal.valueOf(-5000), BigDecimal.valueOf(0), Date.valueOf("2024-01-03"), Date.valueOf("2024-01-03"));
+        Summary ExpectedSummary = new SummaryVO(BigDecimal.valueOf(5000), BigDecimal.valueOf(-5000), BigDecimal.valueOf(0), Date.valueOf("2024-01-03"), Date.valueOf("2024-01-03"));
         Summary actualSummary = service.getAccountSummary(accountId, Date.valueOf("2024-01-03"), Date.valueOf("2024-01-03"));
 
         assertEquals(ExpectedSummary, actualSummary, "ExpectedSummary: " + ExpectedSummary.toString() + "\nActual: " + actualSummary.toString());
@@ -241,7 +240,7 @@ public class AggregationServiceImplTests {
             Date.valueOf("2024-01-01")
         )).thenReturn(mockTx);
 
-        Summary ExpectedSummary = new SummaryRangeVO(BigDecimal.valueOf(0), BigDecimal.valueOf(0), BigDecimal.valueOf(0), Date.valueOf("2024-01-01"), Date.valueOf("2024-01-01"));
+        Summary ExpectedSummary = new SummaryVO(BigDecimal.valueOf(0), BigDecimal.valueOf(0), BigDecimal.valueOf(0), Date.valueOf("2024-01-01"), Date.valueOf("2024-01-01"));
         Summary actualSummary = service.getAccountSummary(accountId, Date.valueOf("2024-01-01"), Date.valueOf("2024-01-01"));
 
         assertEquals(ExpectedSummary, actualSummary, "ExpectedSummary: " + ExpectedSummary.toString() + "\nActual: " + actualSummary.toString());

@@ -5,20 +5,15 @@ import java.sql.Date;
 import java.util.List;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @NoArgsConstructor
 @Setter
-@Getter
-@ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = true)
-public class SummaryRangeVO extends SummaryAbstract implements Summary{
-    Date startDate;
-    Date endDate;
-
+@ToString
+@EqualsAndHashCode(callSuper = false)
+public class SummaryVO extends SummaryAbstract implements Summary{
     final int LESS_THAN = -1;
 
     //pre: true
@@ -35,29 +30,24 @@ public class SummaryRangeVO extends SummaryAbstract implements Summary{
         net = net.add(amount);
     }
 
-    public Date getDate(){
-        return startDate;
-    }
-
-    public List<Date> getDateRange(){
-        List<Date> dateRange = List.of(startDate, endDate);
-        return dateRange;
-    }
-
-    public SummaryRangeVO(Date startDate, Date endDate){
+    public SummaryVO(Date startDate, Date endDate){
         this.income = new BigDecimal(0);
         this.expenses = new BigDecimal(0);
         this.net = new BigDecimal(0);
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.dateRange = List.of(startDate, endDate);
     }
 
-    public SummaryRangeVO(BigDecimal income, BigDecimal expenses, BigDecimal net, Date startDate, Date endDate){
+    public SummaryVO(BigDecimal income, BigDecimal expenses, BigDecimal net, Date startDate){
         this.income = income;
         this.expenses = expenses;
         this.net = net;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.dateRange = List.of(startDate, startDate);
     }
     
+    public SummaryVO(BigDecimal income, BigDecimal expenses, BigDecimal net, Date startDate, Date endDate){
+        this.income = income;
+        this.expenses = expenses;
+        this.net = net;
+        this.dateRange = List.of(startDate, endDate);
+    }
 }

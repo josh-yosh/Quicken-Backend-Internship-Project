@@ -13,9 +13,11 @@ import com.quicken.aggregation_model.dto.AccountDto;
 import com.quicken.aggregation_model.dto.SummaryDailyDto;
 import com.quicken.aggregation_model.dto.SummaryRangeDto;
 import com.quicken.aggregation_model.mappers.AccountMapper;
+import com.quicken.aggregation_model.mappers.SummaryDailyMapper;
 import com.quicken.aggregation_model.mappers.SummaryRangeMapper;
 import com.quicken.aggregation_model.service.AggregationService;
-import com.quicken.aggregation_model.vo.Summary.SummaryRangeVO;
+import com.quicken.aggregation_model.vo.Summary.Summary;
+import com.quicken.aggregation_model.vo.Summary.SummaryVO;
 
 import lombok.AllArgsConstructor;
 
@@ -27,6 +29,7 @@ public class AccountsController {
     private final AggregationService aggregationService;
     private final AccountMapper accountMapper;
     private final SummaryRangeMapper summaryRangeMapper;
+    private final SummaryDailyMapper summaryDailyMapper;
 
     @GetMapping
     public List<AccountDto> getAccounts(){
@@ -41,15 +44,19 @@ public class AccountsController {
                                                @RequestParam(name = "from") String startDate,
                                                  @RequestParam(name = "to") String endDate)
     {
-        SummaryRangeVO summaryRange = aggregationService.getAccountSummary(accountId, Date.valueOf(startDate), Date.valueOf(endDate));
+        Summary summaryRange = aggregationService.getAccountSummary(accountId, Date.valueOf(startDate), Date.valueOf(endDate));
         return summaryRangeMapper.toDto(summaryRange);
     }
 
     @GetMapping("/{accountId}/daily-summary")
-    public SummaryDailyDto getAccountSummaryDaily(@PathVariable long accountId,
+    public List<SummaryDailyDto> getAccountSummaryDaily(@PathVariable long accountId,
                                                 @RequestParam(name = "from") String startDate,
                                                 @RequestParam(name = "to") String endDate)
     {
-        
+        List<SummaryDailyDto> summaries = aggregationService.getAccountDailySummary(accountId, Date.valueOf(startDate), Date.valueOf(endDate))
+                                                .stream()
+                                                .map(summaryDailyMapper::toDto)
+                                                .toList();
+        return summaries;
     }
 }

@@ -16,8 +16,7 @@ import com.quicken.aggregation_model.model.Account;
 import com.quicken.aggregation_model.model.Transaction;
 import com.quicken.aggregation_model.repository.AccountRepo;
 import com.quicken.aggregation_model.repository.TransactionRepo;
-import com.quicken.aggregation_model.vo.Summary.SummaryDailyVO;
-import com.quicken.aggregation_model.vo.Summary.SummaryRangeVO;
+import com.quicken.aggregation_model.vo.Summary.SummaryVO;
 import com.quicken.aggregation_model.vo.Summary.Summary;
 import com.quicken.aggregation_model.vo.Summary.SummaryComparator;
 
@@ -40,7 +39,7 @@ public class AggregationServiceImpl implements AggregationService {
     }
 
     @Override
-    public SummaryRangeVO getAccountSummary(long accountId, Date startDate, Date endDate) {
+    public Summary getAccountSummary(long accountId, Date startDate, Date endDate) {
         Account account = accountRepo.findAccountbyId(accountId); //to check if Account exists
         if(account == null) //should the repo layer throw an exception? or here?
              throw new AccountNotFoundException(accountId);
@@ -64,7 +63,7 @@ public class AggregationServiceImpl implements AggregationService {
             net = net.add(transactionAmount);
         }
 
-        SummaryRangeVO summary = new SummaryRangeVO(income, expenses, net, startDate, endDate);
+        Summary summary = new SummaryVO(income, expenses, net, startDate, endDate);
 
         return summary;
     }
@@ -89,7 +88,7 @@ public class AggregationServiceImpl implements AggregationService {
                 summaryVO.addTransactionAmount(transaction.getAmount());
                 dateToSummaryVoMap.put(transactionDate, summaryVO);
             } else {
-                Summary newSummaryVO = new SummaryDailyVO(transactionDate);
+                Summary newSummaryVO = new SummaryVO(transactionDate, transactionDate);
                 newSummaryVO.addTransactionAmount(transaction.getAmount());
                 dateToSummaryVoMap.put(transactionDate, newSummaryVO);
             }
