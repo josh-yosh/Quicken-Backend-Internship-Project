@@ -37,6 +37,22 @@ Run Springboot project using gradle and its bootrun command
 ```
 gradle bootrun
 ```
+## Api Routes
+
+To get all accounts. Accounts will have and id, a name, and a description.
+```
+/api/accounts
+```
+
+To get a Summary for a specific account within a range of dates. Summaries will contain incomes, expenses, a net amount, and a pair of dates
+```
+/api/accounts/{accountId}/summary?from=YYYY-MM-DD&to=YYYY-MM-DD
+```
+
+To get a list of daily Summaries for a specific account within a range of dates. Summaries will contain incomes, expenses, a net amount, and a date.
+```
+/api/accounts/{accountId}/daily-summary?from=YYYY-MM-DD&to=YYYY-MM-DD
+```
 
 
 ## Testing through postman
